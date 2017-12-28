@@ -1,0 +1,18 @@
+node {
+  stage("git clone") {
+    checkout scm
+  }
+  
+  def app
+  
+  stage("docker build") {
+    app = docker.build("hsudbrock/svn-server", "-f svn-server/Dockerfile .")
+  }
+  
+  stage("docker publish") {
+      docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+          app.push("${env.BUILD_NUMBER}")
+          app.push("latest")
+      }
+  }
+}
