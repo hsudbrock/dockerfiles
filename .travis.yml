@@ -23,5 +23,6 @@ before_deploy:
   - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
 
 deploy:
-  - docker push $REPO
+  provider: script
+  script: docker push $IMAGE_NAME
   
