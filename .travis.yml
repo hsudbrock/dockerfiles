@@ -7,7 +7,7 @@ services:
 env:
   global:
     - COMMIT=${TRAVIS_COMMIT::8}
-    - IMAGE_NAME=hsudbrock/svn-server
+    - IMAGE_NAME=$DOCKER_USER/svn-server
 
 script:
   - cd svn-server
@@ -20,7 +20,7 @@ after_script:
   - docker images
 
 before_deploy:
-  - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+  - echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
 
 deploy:
   provider: script
