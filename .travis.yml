@@ -4,6 +4,11 @@ sudo: required
 services:
   - docker
 
+env:
+  global:
+    - COMMIT=${TRAVIS_COMMIT::8}
+    - REPO=hsudbrock/svn-server
+
 script:
   - cd svn-server
   - docker build -f Dockerfile -t $REPO:$COMMIT .
