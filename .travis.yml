@@ -7,8 +7,21 @@ services:
 env:
   global:
     - COMMIT=${TRAVIS_COMMIT::8}
-    - REPO=hsudbrock/svn-server
+    - IMAGE_NAME=hsudbrock/svn-server
 
 script:
   - cd svn-server
-  - docker build -f Dockerfile -t $REPO:$COMMIT .
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
+  - docker build -f Dockerfile -t $IMAGE_NAME:$COMMIT .
+  - docker tag $IMAGE_NAME:$COMMIT $IMAGE_NAME:$TAG
+  - docker tag $IMAGE_NAME:$COMMIT $IMAGE_NAME:travis-$TRAVIS_BUILD_NUMBER
+
+after_script:
+  - docker images
+
+before_deploy:
+  - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+
+deploy:
+  - docker push $REPO
+  
